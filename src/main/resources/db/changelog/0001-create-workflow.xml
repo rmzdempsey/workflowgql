@@ -1,0 +1,50 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+        <property name="u_id" value="RANDOM_UUID()" dbms="h2"/>
+
+        <changeSet id="01" author="rmd">
+
+            <createTable tableName="Workflow">
+                <column name="uuid" type="UUID" defaultValueComputed="${u_id}">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="name" type="varchar(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="description" type="varchar(255)" />
+            </createTable>
+
+            <createTable tableName="WorkflowVersion">
+                <column name="uuid" type="UUID" defaultValueComputed="${u_id}">
+                    <constraints nullable="false" primaryKey="true"/>
+                </column>
+                <column name="versionNo" type="int">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="workflowUuid" type="UUID" >
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+
+            <addForeignKeyConstraint baseColumnNames="workflowUuid"
+                                     baseTableName="WorkflowVersion"
+                                     constraintName="fk_workflowversion_id"
+                                     referencedColumnNames="uuid"
+                                     referencedTableName="Workflow"
+                                     onDelete="CASCADE"
+                                        />
+
+            <addUniqueConstraint
+                    columnNames="workflowUuid, versionNo"
+                    constraintName="unique_version_per_workflow"
+                    tableName="WorkflowVersion"
+            />
+
+        </changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,27 @@
+
+
+type Workflow {
+    uuid: ID!
+    name: String
+    description: String
+    versions: [WorkflowVersion]
+}
+
+type WorkflowVersion {
+    uuid: ID!
+    versionNo: Int!
+    workflowId: ID
+}
+
+input WorkflowInput {
+    name: String
+    description: String
+}
+
+type Query {
+  allWorkflows: [Workflow]
+}
+
+type Mutation {
+    createWorkflow ( workflow : WorkflowInput ) : Workflow
+}
