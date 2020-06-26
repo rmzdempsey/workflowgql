@@ -78,6 +78,10 @@ public class WorkflowService {
         return null;
     }
 
+    public void deleteWorkflow(UUID uuid){
+        this.workflowRepository.deleteById(uuid);
+    }
+
     public List<WorkflowVersion> getVersionsByWorkflowUuid(UUID uuid){
         return this.workflowVersionRepository.findByWorkflowUuid(uuid);
     }

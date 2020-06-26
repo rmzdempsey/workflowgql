@@ -43,6 +43,14 @@ public class GraphQLDataFetchers {
         };
     }
 
+    public DataFetcher deleteWorkflowDataFetcher(){
+        return dataFetchingEnvironment -> {
+            UUID uuid = objectMapper.convertValue(dataFetchingEnvironment.getArgument("uuid"), UUID.class);
+            workflowService.deleteWorkflow(uuid);
+            return true;
+        };
+    }
+
     public DataFetcher<List<WorkflowVersion>> getVersionsDataFetcher(){
         return dataFetchingEnvironment -> {
             Workflow workflow = dataFetchingEnvironment.getSource();

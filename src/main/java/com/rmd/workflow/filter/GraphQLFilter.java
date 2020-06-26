@@ -24,7 +24,7 @@ public class GraphQLFilter implements Filter {
             ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
 
-        if(false){
+        if(true){
             chain.doFilter(request, response);
         }
         else {

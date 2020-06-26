@@ -43,4 +43,5 @@ type Query {
 type Mutation {
     createWorkflow ( request : CreateWorkflowRequest ) : Workflow
     updateWorkflow ( request : UpdateWorkflowRequest ) : Workflow
+    deleteWorkflow ( uuid : ID! ) : Boolean
 }
