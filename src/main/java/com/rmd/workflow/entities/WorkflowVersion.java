@@ -28,7 +28,7 @@ public class WorkflowVersion {
     private String name;
     private String description;
     private String editComment;
-    private UUID parentVersionUuid;
+    private Integer parentVersionNo;
     private String createdBy;
     private LocalDateTime createdOn;
     private String workflowJson;

@@ -13,7 +13,7 @@ type WorkflowVersion {
     name: String
     description: String
     editComment: String
-    parentVersionUuid: ID
+    parentVersionNo: Int
     createdBy: String!
     createdOn: LocalDateTime
     workflowJson: String!
@@ -28,7 +28,8 @@ input CreateWorkflowRequest {
 }
 
 input UpdateWorkflowRequest {
-    uuid: ID!
+    workflowUuid: ID!
+    versionNo: Int!
     name: String
     description: String
     comment: String!

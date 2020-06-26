@@ -66,6 +66,7 @@ public class GraphQLProvider {
                 .type(newTypeWiring("WorkflowVersion").dataFetcher("createdOn", dataFetchers.getCreatedOnDataFetcher()))
                 .type(newTypeWiring("Mutation")
                         .dataFetcher("createWorkflow", dataFetchers.createWorkflowDataFetcher())
+                        .dataFetcher("updateWorkflow", dataFetchers.updateWorkflowDataFetcher())
                 )
                 .scalar(GraphQLScalarType.newScalar()
                         .name("LocalDateTime")

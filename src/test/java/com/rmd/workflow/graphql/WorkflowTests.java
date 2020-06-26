@@ -50,13 +50,13 @@ public class WorkflowTests {
 
         String req = String.join(" ",
                 "mutation { createWorkflow( request: {",
-                "name: \\\"wf1\\\",",
+                "name: \\\"testCreateWorkflow\\\",",
                 "description: \\\"my first wf\\\",",
                 "workflowJson: \\\"{}\\\"",
                 "}){",
                 "uuid, ",
                 "releasedVersionNo, ",
-                "versions { uuid, versionNo  }}}");
+                "versions { uuid, versionNo, name  }}}");
 
         ResponseEntity<String> response = graphQLCall(req);
 
@@ -73,6 +73,60 @@ public class WorkflowTests {
 
         assertThat(jsonResponse.at("/data/createWorkflow/versions").size(),is(1));
         assertThat(jsonResponse.at("/data/createWorkflow/versions/0/versionNo").asInt(),is(1));
+        assertThat(jsonResponse.at("/data/createWorkflow/versions/0/name").asText(),is("testCreateWorkflow"));
+
+    }
+
+    @Test
+    public void testCreateWorkflowThenUpdate() throws Exception {
+
+        String req = String.join(" ",
+                "mutation { createWorkflow( request: {",
+                "name: \\\"testCreateWorkflowThenUpdate\\\",",
+                "description: \\\"my first wf\\\",",
+                "workflowJson: \\\"{}\\\"",
+                "}){",
+                "uuid, ",
+                "releasedVersionNo, ",
+                "versions { uuid, versionNo  }}}");
+
+        ResponseEntity<String> response = graphQLCall(req);
+
+        assertThat(response.getStatusCodeValue(),is(200));
+        JsonNode jsonResponse = toJson(response);
+        assertThat(jsonResponse.has("errors"),is(false));
+
+        String workflowUuid = jsonResponse.at("/data/createWorkflow/uuid").asText();
+
+        req = String.join(" ",
+                "mutation { updateWorkflow( request: {",
+                "workflowUuid: \\\"" + workflowUuid + "\\\",",
+                "versionNo:"+jsonResponse.at("/data/createWorkflow/releasedVersionNo").asInt(),
+                "name: \\\"testCreateWorkflowThenUpdateXXX\\\",",
+                "description: \\\"testCreateWorkflowThenUpdateXXX\\\",",
+                "workflowJson: \\\"{}\\\"",
+                "comment: \\\"changed name\\\"",
+                "}){",
+                "uuid, ",
+                "releasedVersionNo, ",
+                "versions { uuid, versionNo, parentVersionNo, name  }}}");
+
+        response = graphQLCall(req);
+
+        assertThat(response.getStatusCodeValue(),is(200));
+        jsonResponse = toJson(response);
+        assertThat(jsonResponse.has("errors"),is(false));
+
+        assertThat(jsonResponse.at("/data/updateWorkflow/uuid").asText(),is(workflowUuid));
+        assertThat(jsonResponse.at("/data/updateWorkflow/releasedVersionNo").asInt(),is(1));
+
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions").size(),is(2));
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions/0/versionNo").asInt(),is(1));
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions/0/parentVersionNo").isNull(),is(true));
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions/0/name").asText(),is("testCreateWorkflowThenUpdate"));
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions/1/versionNo").asInt(),is(2));
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions/1/parentVersionNo").asInt(),is(1));
+        assertThat(jsonResponse.at("/data/updateWorkflow/versions/1/name").asText(),is("testCreateWorkflowThenUpdateXXX"));
 
     }
 

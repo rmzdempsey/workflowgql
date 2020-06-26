@@ -25,7 +25,7 @@
                 <column name="versionNo" type="int">
                     <constraints nullable="false"/>
                 </column>
-                <column name="parentVersionUuid" type="UUID">
+                <column name="parentVersionNo" type="int">
                 </column>
                 <column name="name" type="varchar(255)">
                     <constraints nullable="false"/>

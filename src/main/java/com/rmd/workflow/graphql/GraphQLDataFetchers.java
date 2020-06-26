@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rmd.workflow.entities.Workflow;
 import com.rmd.workflow.entities.WorkflowVersion;
 import com.rmd.workflow.graphql.inputs.CreateWorkflowRequest;
+import com.rmd.workflow.graphql.inputs.UpdateWorkflowRequest;
 import com.rmd.workflow.services.WorkflowService;
 import graphql.schema.DataFetcher;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,15 @@ public class GraphQLDataFetchers {
 
     public DataFetcher createWorkflowDataFetcher(){
         return dataFetchingEnvironment -> {
-            CreateWorkflowRequest input = objectMapper.convertValue(dataFetchingEnvironment.getArgument("request"), CreateWorkflowRequest.class);;
+            CreateWorkflowRequest input = objectMapper.convertValue(dataFetchingEnvironment.getArgument("request"), CreateWorkflowRequest.class);
             return workflowService.createWorkflow(input);
+        };
+    }
+
+    public DataFetcher updateWorkflowDataFetcher(){
+        return dataFetchingEnvironment -> {
+            UpdateWorkflowRequest input = objectMapper.convertValue(dataFetchingEnvironment.getArgument("request"), UpdateWorkflowRequest.class);
+            return workflowService.updateWorkflow(input);
         };
     }
 
