@@ -2,20 +2,37 @@
 
 type Workflow {
     uuid: ID!
-    name: String
-    description: String
     versions: [WorkflowVersion]
+    releasedVersionNo: Int!
 }
 
 type WorkflowVersion {
     uuid: ID!
     versionNo: Int!
-    workflowId: ID
-}
-
-input WorkflowInput {
+    workflowId: ID!
     name: String
     description: String
+    editComment: String
+    parentVersionUuid: ID
+    createdBy: String!
+    createdOn: LocalDateTime
+    workflowJson: String!
+}
+
+scalar LocalDateTime
+
+input CreateWorkflowRequest {
+    name: String!
+    description: String
+    workflowJson: String!
+}
+
+input UpdateWorkflowRequest {
+    uuid: ID!
+    name: String
+    description: String
+    comment: String!
+    workflowJson: String!
 }
 
 type Query {
@@ -23,5 +40,6 @@ type Query {
 }
 
 type Mutation {
-    createWorkflow ( workflow : WorkflowInput ) : Workflow
+    createWorkflow ( request : CreateWorkflowRequest ) : Workflow
+    updateWorkflow ( request : UpdateWorkflowRequest ) : Workflow
 }

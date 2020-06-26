@@ -27,7 +27,7 @@ public class WorkflowTests {
     @Test
     public void testGetAllWorkflows() throws Exception {
 
-        ResponseEntity<String> response = graphQLCall("query { allWorkflows { uuid name description } }");
+        ResponseEntity<String> response = graphQLCall("query { allWorkflows { uuid releasedVersionNo versions { versionNo } } }");
 
         assertThat(response.getStatusCodeValue(),is(200));
 
@@ -49,26 +49,29 @@ public class WorkflowTests {
     public void testCreateWorkflow() throws Exception {
 
         String req = String.join(" ",
-                "mutation { createWorkflow( workflow: {",
+                "mutation { createWorkflow( request: {",
                 "name: \\\"wf1\\\",",
-                "description: \\\"my first wf\\\"",
+                "description: \\\"my first wf\\\",",
+                "workflowJson: \\\"{}\\\"",
                 "}){",
                 "uuid, ",
-                "name, ",
-                "description, ",
+                "releasedVersionNo, ",
                 "versions { uuid, versionNo  }}}");
 
         ResponseEntity<String> response = graphQLCall(req);
+
+
 
         assertThat(response.getStatusCodeValue(),is(200));
 
         JsonNode jsonResponse = toJson(response);
 
-        assertThat(jsonResponse.at("/data/createWorkflow/uuid").isNull(),is(false));
-        assertThat(jsonResponse.at("/data/createWorkflow/name").asText(),is("wf1"));
-        assertThat(jsonResponse.at("/data/createWorkflow/description").asText(),is("my first wf"));
+        assertThat(jsonResponse.has("errors"),is(false));
 
-        assertThat(jsonResponse.at("/data/createWorkflow/versions/0/uuid").isNull(),is(false));
+        assertThat(jsonResponse.at("/data/createWorkflow/uuid").isNull(),is(false));
+        assertThat(jsonResponse.at("/data/createWorkflow/releasedVersionNo").asInt(),is(1));
+
+        assertThat(jsonResponse.at("/data/createWorkflow/versions").size(),is(1));
         assertThat(jsonResponse.at("/data/createWorkflow/versions/0/versionNo").asInt(),is(1));
 
     }

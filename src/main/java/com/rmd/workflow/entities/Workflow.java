@@ -12,9 +12,9 @@ public class Workflow {
     @Id
     @GeneratedValue
     private UUID uuid;
-    private String name;
-    private String description;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "workflow",cascade = CascadeType.ALL)
     private List<WorkflowVersion> versions;
+
+    private int releasedVersionNo;
 }

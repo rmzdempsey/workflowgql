@@ -12,10 +12,10 @@
                 <column name="uuid" type="UUID" defaultValueComputed="${u_id}">
                     <constraints nullable="false" primaryKey="true"/>
                 </column>
-                <column name="name" type="varchar(255)">
+                <column name="releasedVersionNo" type="int">
                     <constraints nullable="false"/>
                 </column>
-                <column name="description" type="varchar(255)" />
+
             </createTable>
 
             <createTable tableName="WorkflowVersion">
@@ -25,6 +25,16 @@
                 <column name="versionNo" type="int">
                     <constraints nullable="false"/>
                 </column>
+                <column name="parentVersionUuid" type="UUID">
+                </column>
+                <column name="name" type="varchar(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="description" type="varchar(255)" />
+                <column name="editComment" type="varchar(255)" />
+                <column name="createdBy" type="varchar(255)" />
+                <column name="createdOn" type="varchar(255)" />
+                <column name="workflowJson" type="varchar(255)" />
                 <column name="workflowUuid" type="UUID" >
                     <constraints nullable="false"/>
                 </column>

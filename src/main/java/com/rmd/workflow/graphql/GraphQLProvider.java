@@ -3,6 +3,11 @@ package com.rmd.workflow.graphql;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import graphql.GraphQL;
+import graphql.schema.Coercing;
+import graphql.schema.CoercingParseLiteralException;
+import graphql.schema.CoercingParseValueException;
+import graphql.schema.CoercingSerializeException;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -16,6 +21,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
@@ -56,9 +63,30 @@ public class GraphQLProvider {
                         .dataFetcher("allWorkflows", dataFetchers.allWorkflowsDataFetcher())
                 )
                 .type(newTypeWiring("Workflow").dataFetcher("versions", dataFetchers.getVersionsDataFetcher()))
+                .type(newTypeWiring("WorkflowVersion").dataFetcher("createdOn", dataFetchers.getCreatedOnDataFetcher()))
                 .type(newTypeWiring("Mutation")
                         .dataFetcher("createWorkflow", dataFetchers.createWorkflowDataFetcher())
                 )
+                .scalar(GraphQLScalarType.newScalar()
+                        .name("LocalDateTime")
+                        .coercing(new Coercing<LocalDateTime, String>() {
+                            private DateTimeFormatter sdf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                            @Override
+                            public String serialize(Object dataFetcherResult) throws CoercingSerializeException {
+                                return ((LocalDateTime)dataFetcherResult).format(sdf);
+                            }
+
+                            @Override
+                            public LocalDateTime parseValue(Object input) throws CoercingParseValueException {
+                                return LocalDateTime.parse((String)input);
+                            }
+
+                            @Override
+                            public LocalDateTime parseLiteral(Object input) throws CoercingParseLiteralException {
+                                return LocalDateTime.parse((String)input);
+                            }
+                        })
+                        .build())
                 .build();
     }
 }
